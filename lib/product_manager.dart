@@ -4,11 +4,12 @@ import './products.dart';
 
 import './product_control.dart';
 
+// ignore: must_be_immutable
 class ProductManager extends StatefulWidget {
 
   final String startingProduct;
 
-  ProductManager(this.startingProduct) {
+  ProductManager({this.startingProduct}) {
     print('product manager constructor');
   }
 
@@ -25,7 +26,9 @@ class _ProductManagerState extends State<ProductManager> {
   @override
   void initState() {
     print('product manager state --> initState');
-    _products.add(widget.startingProduct);
+    if (widget.startingProduct != null) {
+      _products.add(widget.startingProduct);
+    }
     super.initState();
   }
 
@@ -40,15 +43,19 @@ class _ProductManagerState extends State<ProductManager> {
       _products.add(product);
     });
   }
+
+  void removeAllProducts() {
+    setState(() {
+      _products.removeRange(0, _products.length);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     print('product manager state --> build');
     return Column(children: [
       Container(
-        margin: EdgeInsets.all(10.0),
-        child: ProductControl(addProduct)
-      ),
-      Products(_products)
-    ]);
+          margin: EdgeInsets.all(10.0), child: ProductControl(addProduct, removeAllProducts)),
+      Expanded(child: Products(products: _products))
+    ],);
   }
 }
